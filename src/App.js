@@ -1,7 +1,7 @@
-import { useEffect} from 'react'
+import { useState, useEffect} from 'react'
 import './App.css';
 import SearchIcon from './search.svg'
-
+import MovieCard from './MovieCard';
 
 const API_URL = 'http://www.omdbapi.com?apikey=d4b80d10'
 
@@ -18,15 +18,17 @@ imdbID: "tt0831387"
 
 const App = () => {
 
+    const [movies, setMovies] = useState([]);
+
     const searchMovies = async (title) => {
        const response = await fetch (`${API_URL}&s=${title}`);   
        const data= await response.json();
        
-       console.log(data.Search);
+       setMovies(data.Search);
     }
 
     useEffect(() => {
-        searchMovies('Godzilla')
+        searchMovies('Avengers')
 
     }, []);
 
@@ -48,17 +50,21 @@ const App = () => {
             onClick = {() => {}}
 
         </div>
-        <div className = "container">
-            <div className = "movie">
-                <div>
-                    <p>{movie1.Year}</p>
-                </div>
-                <div>
-                    <img src = {movie1.Poster} alt = {movie1.Title}/>
-                </div>
-            </div>
 
-        </div>
+        {
+            movies?.length > 0 ?
+            (<div className = "container">
+                {movies.map((movie) => (
+                    <MovieCard movie = {movie} />
+                ))}
+
+            </div>
+            ) : (
+            <div className = "empty">
+                <h2>No Movies Found</h2>
+
+            </div>)
+        }
 
     </div>
    
